@@ -1,48 +1,45 @@
 /* =============================================
-   5秒选择 — 样式文件
-   设计风格：暗色 + 高压迫感 + 电光黄
+   5秒选择 v2 — 样式文件
+   新增：usage badge、历史记录页、结果对阵标签
    ============================================= */
 
-/* ----- CSS变量：颜色系统 ----- */
 :root {
-  --bg: #0d0d0d;           /* 主背景：极深黑 */
-  --surface: #1a1a1a;      /* 卡片背景 */
-  --accent: #f5c518;       /* 主色调：电光黄 */
-  --accent-dim: #c49c10;   /* 暗黄，hover用 */
-  --text: #f0f0f0;         /* 主文字：近白 */
-  --text-muted: #888;      /* 次要文字：灰 */
-  --border: #2a2a2a;       /* 边框色 */
-  --danger: #ff4136;       /* 紧张感红色 */
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --surface-2: #1f1f1f;
+  --accent: #f5c518;
+  --accent-dim: #c49c10;
+  --accent-glow: rgba(245, 197, 24, 0.15);
+  --text: #f0f0f0;
+  --text-muted: #666;
+  --border: #252525;
+  --danger: #ff4136;
+  --success: #2ecc71;
 }
 
-/* ----- 全局重置 ----- */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Noto Sans SC', sans-serif;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
-/* ----- 噪点纹理（让背景有质感） ----- */
+/* 噪点纹理 */
 .noise {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.035;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
 /* =============================================
-   页面切换系统
+   页面切换
    ============================================= */
 .screen {
   position: fixed;
@@ -53,14 +50,11 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
-
-  /* 默认隐藏 */
   opacity: 0;
   pointer-events: none;
-  transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(16px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
-
 .screen.active {
   opacity: 1;
   pointer-events: all;
@@ -68,223 +62,247 @@ body {
 }
 
 /* =============================================
-   页面1：输入界面
+   页面1：输入
    ============================================= */
 header {
   position: absolute;
-  top: 32px;
+  top: 28px;
   text-align: center;
 }
-
 .logo {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 2rem;
+  font-size: 1.9rem;
   letter-spacing: 4px;
   color: var(--accent);
 }
-
 .tagline {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
   letter-spacing: 2px;
   margin-top: 2px;
 }
 
-/* ----- 输入区域 ----- */
+/* 每日次数徽章 */
+.usage-badge {
+  position: absolute;
+  top: 28px;
+  right: 24px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  letter-spacing: 1px;
+}
+.usage-badge span {
+  color: var(--accent);
+  font-weight: 700;
+}
+/* 次数为0时变红 */
+.usage-badge.empty {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.usage-badge.empty span { color: var(--danger); }
+
+/* 输入区 */
 .input-area {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
   max-width: 400px;
   z-index: 1;
 }
-
 .option-card {
   width: 100%;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 20px;
-  transition: border-color 0.3s, transform 0.2s;
+  padding: 18px 20px;
+  transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
 }
-
 .option-card:focus-within {
   border-color: var(--accent);
   transform: scale(1.02);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
-
 .option-card label {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   letter-spacing: 3px;
   color: var(--accent);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: 700;
 }
-
 .option-card input {
   width: 100%;
   background: transparent;
   border: none;
   outline: none;
   color: var(--text);
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-family: 'Noto Sans SC', sans-serif;
   font-weight: 700;
 }
+.option-card input::placeholder { color: #333; font-weight: 400; }
 
-.option-card input::placeholder {
-  color: var(--text-muted);
-  font-weight: 400;
-}
-
-/* ----- VS 分隔 ----- */
 .vs-badge {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: var(--text-muted);
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   border: 1px solid var(--border);
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: 44px; height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* ----- 开始按钮 ----- */
-#btn-start {
-  margin-top: 8px;
+/* 次数用完提示 */
+.limit-message {
   width: 100%;
-  padding: 18px;
+  background: rgba(255, 65, 54, 0.08);
+  border: 1px solid rgba(255, 65, 54, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  color: var(--danger);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+.limit-message small { color: #884040; font-size: 0.75rem; }
+
+#btn-start {
+  width: 100%;
+  padding: 17px;
   background: var(--accent);
   color: #000;
   border: none;
   border-radius: 14px;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   font-family: 'Noto Sans SC', sans-serif;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
   letter-spacing: 2px;
+  transition: background 0.2s, transform 0.1s, opacity 0.2s;
+}
+#btn-start:hover { background: var(--accent-dim); }
+#btn-start:active { transform: scale(0.97); }
+#btn-start:disabled {
+  background: var(--surface-2);
+  color: var(--text-muted);
+  cursor: not-allowed;
 }
 
-#btn-start:hover {
-  background: var(--accent-dim);
+.bottom-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
-
-#btn-start:active {
-  transform: scale(0.97);
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-family: 'Noto Sans SC', sans-serif;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: color 0.2s;
+  padding: 4px 8px;
 }
+.btn-text:hover { color: var(--accent); }
 
 .hint {
-  font-size: 0.72rem;
-  color: var(--text-muted);
+  font-size: 0.7rem;
+  color: #333;
   letter-spacing: 1px;
 }
 
 /* =============================================
-   页面2：倒计时界面
+   页面2：倒计时
    ============================================= */
 .countdown-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   z-index: 1;
 }
-
 .thinking-text {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   letter-spacing: 3px;
   color: var(--text-muted);
   animation: blink 1s infinite;
 }
-
 @keyframes blink {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  50% { opacity: 0.2; }
 }
 
-/* 大号倒计时数字 */
 #countdown-number {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(160px, 35vw, 240px); /* 响应式大小 */
+  font-size: clamp(160px, 35vw, 220px);
   line-height: 1;
   color: var(--accent);
-  text-shadow: 0 0 80px rgba(245, 197, 24, 0.3);
-  transition: transform 0.1s;
+  text-shadow: 0 0 100px rgba(245, 197, 24, 0.25);
 }
-
-/* 数字变化时的抖动动画 */
 #countdown-number.pulse {
-  animation: pulse-number 0.3s ease;
+  animation: pulse-anim 0.3s ease;
 }
-
-@keyframes pulse-number {
-  0%   { transform: scale(1.3); }
+@keyframes pulse-anim {
+  0%   { transform: scale(1.25); }
   100% { transform: scale(1); }
 }
-
-/* 当数字变为1-2时变红，增加紧张感 */
 #countdown-number.urgent {
   color: var(--danger);
-  text-shadow: 0 0 80px rgba(255, 65, 54, 0.4);
+  text-shadow: 0 0 100px rgba(255, 65, 54, 0.35);
 }
 
-/* ----- 进度条 ----- */
 .countdown-bar-track {
-  width: 240px;
-  height: 4px;
+  width: 200px; height: 3px;
   background: var(--border);
   border-radius: 2px;
   overflow: hidden;
 }
-
 #countdown-bar {
   height: 100%;
   width: 100%;
   background: var(--accent);
   border-radius: 2px;
-  transition: width 1s linear, background 1s;
+  transition: width 1s linear, background 0.5s;
 }
+#countdown-bar.urgent { background: var(--danger); }
 
-#countdown-bar.urgent {
-  background: var(--danger);
-}
-
-/* ----- 选项提示 ----- */
 .options-reminder {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 0.85rem;
+  gap: 10px;
+  font-size: 0.82rem;
   color: var(--text-muted);
 }
-
-.vs-small {
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-}
+.vs-small { font-size: 0.6rem; letter-spacing: 2px; }
 
 /* =============================================
-   页面3：结果界面
+   页面3：结果
    ============================================= */
 .result-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   z-index: 1;
   text-align: center;
   padding: 24px;
+  max-width: 440px;
+  width: 100%;
 }
 
 .result-label {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   letter-spacing: 4px;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -292,81 +310,222 @@ header {
 
 .result-choice {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(52px, 12vw, 88px);
+  font-size: clamp(56px, 14vw, 96px);
   color: var(--accent);
-  line-height: 1.1;
+  line-height: 1.05;
   max-width: 400px;
-  /* 结果出现时的动画 */
-  animation: result-appear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  animation: result-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  text-shadow: 0 0 60px rgba(245, 197, 24, 0.2);
 }
-
-@keyframes result-appear {
-  0%   { opacity: 0; transform: scale(0.5) rotate(-3deg); }
+@keyframes result-pop {
+  0%   { opacity: 0; transform: scale(0.6) rotate(-4deg); }
   100% { opacity: 1; transform: scale(1) rotate(0deg); }
 }
 
 .result-comment {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  max-width: 300px;
-  line-height: 1.6;
+  max-width: 280px;
+  line-height: 1.7;
   font-style: italic;
 }
 
-/* ----- 按钮组 ----- */
+/* 对阵标签 */
+.result-versus {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.result-tag {
+  font-size: 0.78rem;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.result-tag.winner {
+  background: var(--accent-glow);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+.result-tag.loser {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.result-vs-text {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+}
+
 .result-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 8px;
+  gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+  margin-top: 4px;
 }
 
 .btn-primary {
-  padding: 14px 28px;
+  padding: 13px 26px;
   background: var(--accent);
   color: #000;
   border: none;
   border-radius: 12px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
   font-family: 'Noto Sans SC', sans-serif;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
   letter-spacing: 1px;
+  transition: background 0.2s, transform 0.1s;
 }
-
 .btn-primary:hover { background: var(--accent-dim); }
 .btn-primary:active { transform: scale(0.97); }
 
 .btn-secondary {
-  padding: 14px 28px;
+  padding: 13px 26px;
   background: transparent;
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 12px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-family: 'Noto Sans SC', sans-serif;
   cursor: pointer;
-  transition: border-color 0.2s, transform 0.1s;
+  letter-spacing: 1px;
+  transition: border-color 0.2s, color 0.2s, transform 0.1s;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.btn-secondary:active { transform: scale(0.97); }
+
+.remaining-hint {
+  font-size: 0.7rem;
+  color: #333;
   letter-spacing: 1px;
 }
 
-.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-.btn-secondary:active { transform: scale(0.97); }
+/* =============================================
+   页面4：历史记录
+   ============================================= */
+.history-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  z-index: 1;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.history-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 3px;
+  color: var(--accent);
+  font-weight: 400;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  max-height: 60vh;
+  padding-right: 4px;
+}
+/* 滚动条样式 */
+.history-list::-webkit-scrollbar { width: 3px; }
+.history-list::-webkit-scrollbar-track { background: transparent; }
+.history-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* 单条历史 */
+.history-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  animation: slide-in 0.3s ease both;
+}
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.history-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.history-chosen {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.history-versus {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.history-date {
+  font-size: 0.65rem;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* 空状态 */
+.history-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  padding: 40px 0;
+  line-height: 2;
+}
+
+.btn-danger {
+  padding: 12px;
+  background: transparent;
+  color: #554444;
+  border: 1px solid #2a1a1a;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-family: 'Noto Sans SC', sans-serif;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: border-color 0.2s, color 0.2s;
+  align-self: center;
+  width: 100%;
+}
+.btn-danger:hover { border-color: var(--danger); color: var(--danger); }
 
 /* =============================================
    手机适配
    ============================================= */
 @media (max-width: 480px) {
-  .result-actions {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-    text-align: center;
-  }
+  .result-actions { flex-direction: column; width: 100%; }
+  .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+  body { overflow: auto; }
+  .screen { position: relative; min-height: 100vh; overflow: visible; }
 }

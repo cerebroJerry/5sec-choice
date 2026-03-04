@@ -3,9 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>5秒选择</title>
 
-  <!-- 引入字体：Bebas Neue（标题）+ Noto Sans SC（中文） -->
+  <!-- ===== SEO 和分享标题 ===== -->
+  <title>5秒选择 · 别想了，让我来</title>
+  <meta name="description" content="选择困难？输入两个选项，5秒内给你答案。" />
+
+  <!-- ===== 网页 Icon（用SVG emoji，不需要任何图片文件）===== -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+  <!-- ===== 字体 ===== -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
@@ -16,9 +22,12 @@
     <div class="noise"></div>
 
     <header>
-      <div class="logo">5秒选择</div>
+      <div class="logo">⚡ 5秒选择</div>
       <div class="tagline">别想了，让我来</div>
     </header>
+
+    <!-- 每日次数显示 -->
+    <div class="usage-badge" id="usage-badge">今日剩余 <span id="usage-count">3</span> 次</div>
 
     <main class="input-area">
       <div class="option-card" id="card-a">
@@ -33,11 +42,20 @@
         <input type="text" id="input-b" placeholder="例如：继续躺着" maxlength="20"/>
       </div>
 
+      <!-- 次数用完时显示，平时隐藏 -->
+      <div id="limit-message" class="limit-message" style="display:none;">
+        ⏰ 今天已经用完了，明天再来～
+        <br/><small>每天3次，制造一点仪式感</small>
+      </div>
+
       <button id="btn-start" onclick="startCountdown()">
         <span>让我选！</span>
       </button>
 
-      <p class="hint">输入你的两个选项，5秒内给你答案</p>
+      <div class="bottom-actions">
+        <button class="btn-text" onclick="goHistory()">📋 历史记录</button>
+        <p class="hint">两个选项，5秒给你答案</p>
+      </div>
     </main>
   </div>
 
@@ -64,18 +82,42 @@
     <div class="noise"></div>
 
     <div class="result-wrapper">
-      <p class="result-label">你应该选</p>
+      <p class="result-label">命运之选</p>
       <div id="result-choice" class="result-choice"></div>
       <p id="result-comment" class="result-comment"></p>
 
+      <!-- 对阵标签：输家 vs 赢家 -->
+      <div class="result-versus">
+        <span id="result-loser" class="result-tag loser"></span>
+        <span class="result-vs-text">vs</span>
+        <span id="result-winner" class="result-tag winner"></span>
+      </div>
+
       <div class="result-actions">
-        <button class="btn-secondary" onclick="shareResult()">📤 分享结果</button>
+        <button class="btn-secondary" onclick="shareResult()">📤 生成分享图</button>
         <button class="btn-primary" onclick="resetApp()">再来一次</button>
       </div>
+
+      <p class="remaining-hint" id="remaining-hint"></p>
     </div>
 
-    <!-- 隐藏的canvas，用于生成分享图片 -->
-    <canvas id="share-canvas" width="800" height="800" style="display:none;"></canvas>
+    <canvas id="share-canvas" width="900" height="900" style="display:none;"></canvas>
+  </div>
+
+  <!-- ===== 页面4：历史记录 ===== -->
+  <div id="screen-history" class="screen">
+    <div class="noise"></div>
+
+    <div class="history-wrapper">
+      <div class="history-header">
+        <h2 class="history-title">历史记录</h2>
+        <button class="btn-text" onclick="showScreen('screen-input')">← 返回</button>
+      </div>
+
+      <div id="history-list" class="history-list"></div>
+
+      <button class="btn-danger" onclick="clearHistory()">🗑 清空记录</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
