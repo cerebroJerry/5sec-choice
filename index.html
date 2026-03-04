@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>5秒选择</title>
+
+  <!-- 引入字体：Bebas Neue（标题）+ Noto Sans SC（中文） -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- ===== 页面1：输入界面 ===== -->
+  <div id="screen-input" class="screen active">
+    <div class="noise"></div>
+
+    <header>
+      <div class="logo">5秒选择</div>
+      <div class="tagline">别想了，让我来</div>
+    </header>
+
+    <main class="input-area">
+      <div class="option-card" id="card-a">
+        <label>选项 A</label>
+        <input type="text" id="input-a" placeholder="例如：去健身房" maxlength="20"/>
+      </div>
+
+      <div class="vs-badge">VS</div>
+
+      <div class="option-card" id="card-b">
+        <label>选项 B</label>
+        <input type="text" id="input-b" placeholder="例如：继续躺着" maxlength="20"/>
+      </div>
+
+      <button id="btn-start" onclick="startCountdown()">
+        <span>让我选！</span>
+      </button>
+
+      <p class="hint">输入你的两个选项，5秒内给你答案</p>
+    </main>
+  </div>
+
+  <!-- ===== 页面2：倒计时界面 ===== -->
+  <div id="screen-countdown" class="screen">
+    <div class="noise"></div>
+
+    <div class="countdown-wrapper">
+      <p class="thinking-text">正在认真思考中...</p>
+      <div id="countdown-number">5</div>
+      <div class="countdown-bar-track">
+        <div id="countdown-bar"></div>
+      </div>
+      <p class="options-reminder">
+        <span id="remind-a"></span>
+        <span class="vs-small">vs</span>
+        <span id="remind-b"></span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== 页面3：结果界面 ===== -->
+  <div id="screen-result" class="screen">
+    <div class="noise"></div>
+
+    <div class="result-wrapper">
+      <p class="result-label">你应该选</p>
+      <div id="result-choice" class="result-choice"></div>
+      <p id="result-comment" class="result-comment"></p>
+
+      <div class="result-actions">
+        <button class="btn-secondary" onclick="shareResult()">📤 分享结果</button>
+        <button class="btn-primary" onclick="resetApp()">再来一次</button>
+      </div>
+    </div>
+
+    <!-- 隐藏的canvas，用于生成分享图片 -->
+    <canvas id="share-canvas" width="800" height="800" style="display:none;"></canvas>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
